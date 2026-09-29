@@ -1,0 +1,105 @@
+features:
+
+  gps_data_quality:
+    display_name: GPS data quality
+    category: observability
+    source_stream: gps
+    engine: raphe
+    unit: proportion
+    native: false
+    personalized: false
+
+  accelerometer_data_quality:
+    display_name: Accelerometer data quality
+    category: observability
+    source_stream: accelerometer
+    engine: raphe
+    unit: proportion
+    native: false
+    personalized: false
+
+  screen_observed:
+    display_name: Screen stream availability
+    category: observability
+    source_stream: screen
+    engine: raphe
+    unit: binary
+    native: false
+    personalized: false
+
+  screen_duration:
+    display_name: Screen duration
+    category: behavior
+    source_stream: screen
+    engine: cortex
+    dependency: screen_active
+    unit: hours_per_day
+    personalized: true
+    reliability_metric: screen_observed
+    reliability_threshold: null
+
+  hometime:
+    display_name: Home time
+    category: mobility
+    source_stream: gps
+    engine: cortex
+    dependency: significant_locations
+    unit: hours_per_day
+    personalized: true
+    reliability_metric: gps_data_quality
+    reliability_threshold: null
+
+  location_entropy:
+    display_name: Location entropy
+    category: mobility
+    source_stream: gps
+    engine: cortex
+    dependency: significant_locations
+    unit: entropy
+    personalized: true
+    reliability_metric: gps_data_quality
+    reliability_threshold: null
+
+  trip_distance:
+    display_name: Trip distance
+    category: mobility
+    source_stream: gps
+    engine: cortex
+    dependency: trips
+    unit: kilometers_per_day
+    personalized: true
+    reliability_metric: gps_data_quality
+    reliability_threshold: null
+
+  trip_duration:
+    display_name: Trip duration
+    category: mobility
+    source_stream: gps
+    engine: cortex
+    dependency: trips
+    unit: hours_per_day
+    personalized: true
+    reliability_metric: gps_data_quality
+    reliability_threshold: null
+
+  trip_count:
+    display_name: Trip count
+    category: mobility
+    source_stream: gps
+    engine: raphe
+    dependency: cortex.trips
+    unit: count_per_day
+    personalized: true
+    reliability_metric: gps_data_quality
+    reliability_threshold: null
+
+  significant_location_count:
+    display_name: Significant location count
+    category: mobility
+    source_stream: gps
+    engine: raphe
+    dependency: cortex.significant_locations
+    unit: count_per_day
+    personalized: true
+    reliability_metric: gps_data_quality
+    reliability_threshold: null

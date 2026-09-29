@@ -1,0 +1,61 @@
+study_id: example_study
+source_platform: custom_csv
+
+streams:
+
+  gps:
+    path: data/gps
+    file_pattern: "*.csv"
+
+    participant:
+      filename_regex: "gps_(?P<participant_id>[^_]+).*"
+
+    timestamp:
+      unit: ms
+
+    columns:
+      timestamp: timestamp
+      latitude: latitude
+      longitude: longitude
+      altitude_m: altitude
+      accuracy_m: accuracy
+
+  accelerometer:
+    path: data/acc
+    file_pattern: "*.csv"
+
+    participant:
+      filename_regex: "acc_(?P<participant_id>[^_]+).*"
+
+    timestamp:
+      unit: ms
+
+    columns:
+      timestamp: timestamp
+      x: x
+      y: y
+      z: z
+
+    constants:
+      unit: unknown
+
+  screen:
+    path: data/screen
+    file_pattern: "*.csv"
+
+    participant:
+      filename_regex: "screen_(?P<participant_id>[^_]+).*"
+
+    timestamp:
+      unit: ms
+
+    columns:
+      timestamp: timestamp
+      event: representation
+      value: value
+
+    event_mapping:
+      screen_on: screen_on
+      screen_off: screen_off
+      unlock: unlock
+      lock: lock

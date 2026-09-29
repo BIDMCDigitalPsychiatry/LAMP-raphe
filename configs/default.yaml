@@ -1,0 +1,72 @@
+project:
+  name: raphe
+  version: "0.1.0"
+
+time:
+  timezone: UTC
+  day_start: "00:00"
+  resolution: day
+
+windows:
+  anchor: clinical_start
+  inclusive_end: true
+
+quality:
+  apply_exclusion_threshold: false
+
+  gps:
+    bin_seconds: 600
+
+  accelerometer:
+    bin_seconds: 1
+
+  screen:
+    metric: observed
+
+baseline:
+  enabled: true
+
+  candidate_observations:
+    - 3
+    - 5
+    - 7
+    - 10
+    - 14
+
+  statistics:
+    - median
+    - mad
+    - iqr
+
+  directional_deviations: true
+
+clinical:
+  preceding_windows_days:
+    - 1
+    - 3
+    - 7
+
+  same_day: true
+
+degradation:
+  enabled: true
+
+  patterns:
+    - random
+    - contiguous
+
+  evaluate:
+    - feature_recovery
+    - baseline_recovery
+    - deviation_recovery
+    - clinical_association_stability
+    - prediction_stability
+
+transportability:
+  outcomes: true
+  diagnoses: true
+
+outputs:
+  format: parquet
+  preserve_native_values: true
+  preserve_provenance: true

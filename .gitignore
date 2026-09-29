@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+
+# Environments
+.venv/
+venv/
+.env
+.env.*
+
+# IDE / OS
+.DS_Store
+.vscode/
+.idea/
+
+# Credentials / secrets
+*credentials*
+*secret*
+*token*
+*.pem
+*.key
+
+# RAPHE outputs
+outputs/
+cache/
+logs/
+
+# Data
+data/
+raw/
+*.parquet
+*.feather
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Cortex/LAMP caches
+cortex_cache/
+
+# Study-specific local configs
+configs/*.local.yaml

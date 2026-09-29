@@ -1,0 +1,23 @@
+name: accelerometer
+version: '1.0'
+required:
+  study_id: string
+  timestamp_ms: int64
+  timestamp_utc: datetime_utc
+  x: float64
+  y: float64
+  z: float64
+  source_platform: string
+  source_stream: string
+  source_participant_id: string
+optional:
+  device_id: string
+  unit: string
+  sampling_hz: float64
+  source_file: string
+  source_record_id: string
+  source_participant_id: string
+  participant_id: string
+  episode_id: string
+defaults:
+  unit: unknown

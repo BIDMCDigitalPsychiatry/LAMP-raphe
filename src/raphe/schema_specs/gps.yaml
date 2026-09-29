@@ -1,0 +1,29 @@
+name: gps
+version: '1.0'
+required:
+  study_id: string
+  timestamp_ms: int64
+  timestamp_utc: datetime_utc
+  latitude: float64
+  longitude: float64
+  source_platform: string
+  source_stream: string
+  source_participant_id: string
+optional:
+  device_id: string
+  altitude_m: float64
+  accuracy_m: float64
+  source_file: string
+  source_record_id: string
+  source_participant_id: string
+  participant_id: string
+  episode_id: string
+constraints:
+  latitude:
+    min: -90
+    max: 90
+  longitude:
+    min: -180
+    max: 180
+  accuracy_m:
+    min: 0

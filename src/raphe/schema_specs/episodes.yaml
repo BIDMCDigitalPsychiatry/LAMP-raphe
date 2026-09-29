@@ -1,0 +1,21 @@
+name: episodes
+version: "1.0"
+
+description: >
+  Analysis or study episodes connecting a source-system
+  identity to a study participant over an explicit temporal
+  interval.
+
+required:
+  study_id: string
+  episode_id: string
+  participant_id: string
+  source_participant_id: string
+  start_ms: int64
+  start_utc: datetime_utc
+  end_ms: int64
+  end_utc: datetime_utc
+
+optional:
+  window_name: string
+  source_platform: string

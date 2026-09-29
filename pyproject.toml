@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "raphe"
+version = "0.1.0"
+description = "Reliability-Aware Personalized Health Phenotyping Engine"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "RAPHE Contributors"}
+]
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=1.5",
+    "pyarrow>=12",
+    "PyYAML>=6",
+    "pydantic>=2",
+    "typer>=0.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+raphe = "raphe.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.setuptools.package-data]
+raphe = ["schema_specs/*.yaml"]

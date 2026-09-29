@@ -1,0 +1,15 @@
+name: clinical_windows
+version: "1.0"
+
+required:
+  study_id: string
+  participant_id: string
+  window_name: string
+  start_ms: int64
+  start_utc: datetime_utc
+  end_ms: int64
+  end_utc: datetime_utc
+
+optional:
+  anchor_type: string
+  source_platform: string

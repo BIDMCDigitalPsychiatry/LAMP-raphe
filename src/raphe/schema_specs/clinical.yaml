@@ -1,0 +1,20 @@
+name: clinical
+version: "1.0"
+
+required:
+  study_id: string
+  participant_id: string
+  timestamp_ms: int64
+  timestamp_utc: datetime_utc
+  instrument: string
+  source_platform: string
+
+optional:
+  assessment_id: string
+  item: string
+  value_numeric: float64
+  value_text: string
+  unit: string
+  timeframe: string
+  source_file: string
+  source_record_id: string

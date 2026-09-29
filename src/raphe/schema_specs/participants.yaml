@@ -1,0 +1,11 @@
+name: participants
+version: "1.0"
+
+required:
+  study_id: string
+  participant_id: string
+
+optional:
+  source_participant_id: string
+  device_id: string
+  source_platform: string
