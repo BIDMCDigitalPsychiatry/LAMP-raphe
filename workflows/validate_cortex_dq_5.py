@@ -87,6 +87,8 @@ def stream_daily_dq(
         stream,
         chunksize=chunksize,
         source_participant_id=uid,
+        start_ms=overall_start,
+        end_ms=overall_end,
     ):
         chunks_seen += 1
         rows_seen += len(chunk)
