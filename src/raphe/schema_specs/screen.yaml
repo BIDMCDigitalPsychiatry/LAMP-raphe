@@ -12,6 +12,7 @@ optional:
   device_id: string
   value: float64
   representation_original: string
+  battery_level_fraction: float64
   source_file: string
   source_record_id: string
   source_participant_id: string
@@ -23,3 +24,8 @@ allowed_events:
 - unlock
 - lock
 - unknown
+
+constraints:
+  battery_level_fraction:
+    min: 0
+    max: 1

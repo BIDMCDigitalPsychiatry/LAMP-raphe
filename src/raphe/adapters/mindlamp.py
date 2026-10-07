@@ -1,4 +1,5 @@
 from pathlib import Path
+import hashlib
 from collections.abc import Iterator
 
 import pandas as pd
@@ -35,12 +36,16 @@ class MindLAMPAdapter(BaseAdapter):
         "gps": "gps",
         "accelerometer": "acc",
         "screen": "screen",
+        "device_usage": "device_usage",
+        "nearby_device": "nearby_device",
     }
 
     SCHEMA_NAME = {
         "gps": "gps",
         "accelerometer": "accelerometer",
         "screen": "screen",
+        "device_usage": "device_usage",
+        "nearby_device": "nearby_device",
     }
 
     def __init__(
@@ -446,7 +451,163 @@ class MindLAMPAdapter(BaseAdapter):
                 errors="coerce",
             )
 
+        if "battery_level" in chunk:
+            out["battery_level_fraction"] = (
+                pd.to_numeric(
+                    chunk["battery_level"],
+                    errors="coerce",
+                )
+            )
+
         return out
+
+
+    def _device_usage(
+        self,
+        chunk,
+        uid,
+        path,
+    ):
+
+        out = self._shared_fields(
+            chunk,
+            uid=uid,
+            stream="device_usage",
+            path=path,
+        )
+
+        numeric_map = {
+            "duration":
+                "interval_duration_ms",
+
+            "totalUnlockDuration":
+                "total_unlock_duration_ms",
+
+            "totalUnlocks":
+                "total_unlocks",
+
+            "totalScreenWakes":
+                "total_screen_wakes",
+        }
+
+        for source_col, canonical_col in (
+            numeric_map.items()
+        ):
+            if source_col in chunk:
+                out[canonical_col] = (
+                    pd.to_numeric(
+                        chunk[source_col],
+                        errors="coerce",
+                    )
+                )
+
+        raw_map = {
+            "applicationUsageByCategory":
+                "application_usage_by_category_raw",
+
+            "notificationUsageByCategory":
+                "notification_usage_by_category_raw",
+
+            "webUsageByCategory":
+                "web_usage_by_category_raw",
+        }
+
+        for source_col, canonical_col in (
+            raw_map.items()
+        ):
+            if source_col in chunk:
+                out[canonical_col] = (
+                    chunk[source_col]
+                    .astype("string")
+                )
+
+        return out
+
+
+    def _nearby_identifier_hash(
+        self,
+        device_type,
+        address,
+    ):
+        """
+        Produce a deterministic study-scoped pseudonymous token.
+
+        Raw network/device addresses and names are intentionally
+        not propagated into the RAPHE canonical output.
+        """
+
+        if pd.isna(address):
+            return None
+
+        raw = (
+            f"{self.study_id}|"
+            f"{self.source_platform}|"
+            f"{device_type}|"
+            f"{address}"
+        )
+
+        return hashlib.blake2b(
+            raw.encode("utf-8"),
+            digest_size=16,
+        ).hexdigest()
+
+
+    def _nearby_device(
+        self,
+        chunk,
+        uid,
+        path,
+    ):
+
+        out = self._shared_fields(
+            chunk,
+            uid=uid,
+            stream="nearby_device",
+            path=path,
+        )
+
+        if "type" in chunk:
+            out["device_type"] = (
+                chunk["type"]
+                .astype("string")
+                .str.lower()
+            )
+
+        if "strength" in chunk:
+            out["signal_strength_raw"] = (
+                pd.to_numeric(
+                    chunk["strength"],
+                    errors="coerce",
+                )
+            )
+
+        if "address" in chunk:
+
+            if "type" in chunk:
+                types = (
+                    chunk["type"]
+                    .astype("string")
+                    .str.lower()
+                )
+            else:
+                types = pd.Series(
+                    [None] * len(chunk),
+                    index=chunk.index,
+                )
+
+            out["nearby_identifier_hash"] = [
+                self._nearby_identifier_hash(
+                    device_type,
+                    address,
+                )
+                for device_type, address in zip(
+                    types,
+                    chunk["address"],
+                )
+            ]
+
+        return out
+
 
     def iter_canonical(
         self,
@@ -504,11 +665,30 @@ class MindLAMPAdapter(BaseAdapter):
                         path,
                     )
 
-                else:
+                elif stream == "screen":
                     out = self._screen(
                         chunk,
                         uid,
                         path,
+                    )
+
+                elif stream == "device_usage":
+                    out = self._device_usage(
+                        chunk,
+                        uid,
+                        path,
+                    )
+
+                elif stream == "nearby_device":
+                    out = self._nearby_device(
+                        chunk,
+                        uid,
+                        path,
+                    )
+
+                else:
+                    raise ValueError(
+                        f"Unsupported stream: {stream}"
                     )
 
                 out = out.reset_index(

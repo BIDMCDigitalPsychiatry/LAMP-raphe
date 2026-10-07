@@ -1,0 +1,24 @@
+name: nearby_device
+version: '1.0'
+
+required:
+  study_id: string
+  timestamp_ms: int64
+  timestamp_utc: datetime_utc
+  source_platform: string
+  source_stream: string
+  source_participant_id: string
+
+optional:
+  participant_id: string
+  episode_id: string
+  device_id: string
+  source_file: string
+  source_record_id: string
+
+  device_type: string
+  signal_strength_raw: float64
+
+  # Stable pseudonymous identifier derived from source type/address.
+  # Raw address and device/network name are intentionally not propagated.
+  nearby_identifier_hash: string

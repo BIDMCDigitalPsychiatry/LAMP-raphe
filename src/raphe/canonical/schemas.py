@@ -13,7 +13,9 @@ SCHEMA_NAMES = {
     "source_intervals",
     "clinical",
     "clinical_windows",
-}
+
+    "device_usage",
+    "nearby_device",}
 
 
 def load_schema(name: str) -> dict:

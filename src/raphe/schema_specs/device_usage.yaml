@@ -1,0 +1,39 @@
+name: device_usage
+version: '1.0'
+
+required:
+  study_id: string
+  timestamp_ms: int64
+  timestamp_utc: datetime_utc
+  source_platform: string
+  source_stream: string
+  source_participant_id: string
+
+optional:
+  participant_id: string
+  episode_id: string
+  device_id: string
+  source_file: string
+  source_record_id: string
+
+  interval_duration_ms: float64
+  total_unlock_duration_ms: float64
+  total_unlocks: float64
+  total_screen_wakes: float64
+
+  application_usage_by_category_raw: string
+  notification_usage_by_category_raw: string
+  web_usage_by_category_raw: string
+
+constraints:
+  interval_duration_ms:
+    min: 0
+
+  total_unlock_duration_ms:
+    min: 0
+
+  total_unlocks:
+    min: 0
+
+  total_screen_wakes:
+    min: 0
