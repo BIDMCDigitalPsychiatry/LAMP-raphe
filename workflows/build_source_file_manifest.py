@@ -36,6 +36,8 @@ def main():
             "gps",
             "accelerometer",
             "screen",
+            "device_usage",
+            "nearby_device",
         ],
     )
 

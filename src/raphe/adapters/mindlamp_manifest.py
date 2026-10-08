@@ -16,6 +16,14 @@ STREAMS = {
         "folder": "screen",
         "prefix": "screen",
     },
+    "device_usage": {
+        "folder": "device_usage",
+        "prefix": "device_usage",
+    },
+    "nearby_device": {
+        "folder": "nearby_device",
+        "prefix": "nearby_device",
+    },
 }
 
 
