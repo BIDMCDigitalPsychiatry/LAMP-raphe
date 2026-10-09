@@ -24,6 +24,8 @@ STREAMS = [
     "gps",
     "accelerometer",
     "screen",
+    "device_usage",
+    "nearby_device",
 ]
 
 
@@ -188,6 +190,7 @@ print(
 )
 
 
+
 wide = (
     out.pivot(
         index="episode_id",
@@ -195,53 +198,201 @@ wide = (
         values="has_stream_evidence",
     )
     .fillna(False)
+    .astype(bool)
 )
 
-wide["all_three"] = (
+
+CORE_STREAMS = [
+    "gps",
+    "accelerometer",
+    "screen",
+]
+
+CONTEXT_STREAMS = [
+    "device_usage",
+    "nearby_device",
+]
+
+ALL_STREAMS = (
+    CORE_STREAMS
+    + CONTEXT_STREAMS
+)
+
+
+for stream in ALL_STREAMS:
+    if stream not in wide.columns:
+        wide[stream] = False
+
+
+wide["all_core_three"] = (
     wide["gps"]
     & wide["accelerometer"]
     & wide["screen"]
 )
 
-wide["none"] = ~(
+wide["gps_acc"] = (
     wide["gps"]
-    | wide["accelerometer"]
-    | wide["screen"]
+    & wide["accelerometer"]
 )
+
+wide["all_five"] = (
+    wide[ALL_STREAMS]
+    .all(axis=1)
+)
+
+wide["none_any"] = ~(
+    wide[ALL_STREAMS]
+    .any(axis=1)
+)
+
+wide[
+    "gps_acc_plus_device_usage"
+] = (
+    wide["gps"]
+    & wide["accelerometer"]
+    & wide["device_usage"]
+)
+
+wide[
+    "gps_acc_plus_nearby_device"
+] = (
+    wide["gps"]
+    & wide["accelerometer"]
+    & wide["nearby_device"]
+)
+
+wide[
+    "gps_acc_plus_both_context"
+] = (
+    wide["gps"]
+    & wide["accelerometer"]
+    & wide["device_usage"]
+    & wide["nearby_device"]
+)
+
 
 print(
     "\nEpisode overlap:"
 )
 
 print(
-    "All three streams:",
+    "GPS + ACC:",
     int(
-        wide["all_three"].sum()
+        wide["gps_acc"].sum()
     ),
 )
 
 print(
-    "No evidence for any of three:",
+    "Core three "
+    "(GPS + ACC + screen):",
     int(
-        wide["none"].sum()
+        wide[
+            "all_core_three"
+        ].sum()
     ),
 )
 
 print(
-    "\nCombination counts:"
+    "GPS + ACC + device_usage:",
+    int(
+        wide[
+            "gps_acc_plus_device_usage"
+        ].sum()
+    ),
+)
+
+print(
+    "GPS + ACC + nearby_device:",
+    int(
+        wide[
+            "gps_acc_plus_nearby_device"
+        ].sum()
+    ),
+)
+
+print(
+    "GPS + ACC + both contextual streams:",
+    int(
+        wide[
+            "gps_acc_plus_both_context"
+        ].sum()
+    ),
+)
+
+print(
+    "All five streams:",
+    int(
+        wide["all_five"].sum()
+    ),
+)
+
+print(
+    "No evidence for any stream:",
+    int(
+        wide["none_any"].sum()
+    ),
+)
+
+
+print(
+    "\nFive-stream combination counts:"
 )
 
 print(
     wide[
-        [
-            "gps",
-            "accelerometer",
-            "screen",
-        ]
+        ALL_STREAMS
     ]
     .value_counts()
     .to_string()
 )
+
+
+print(
+    "\nContext availability among GPS+ACC episodes:"
+)
+
+gps_acc = wide[
+    wide["gps_acc"]
+].copy()
+
+print(
+    "GPS+ACC episodes:",
+    len(gps_acc),
+)
+
+print(
+    "with device_usage:",
+    int(
+        gps_acc[
+            "device_usage"
+        ].sum()
+    ),
+)
+
+print(
+    "with nearby_device:",
+    int(
+        gps_acc[
+            "nearby_device"
+        ].sum()
+    ),
+)
+
+print(
+    "with both:",
+    int(
+        (
+            gps_acc[
+                "device_usage"
+            ]
+            &
+            gps_acc[
+                "nearby_device"
+            ]
+        ).sum()
+    ),
+)
+
 
 print("\nSaved:")
 print(OUTPUT_PATH)
